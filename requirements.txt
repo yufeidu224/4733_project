@@ -1,0 +1,34 @@
+# ============================================================
+#  ML Statistical Arbitrage Pipeline
+#  Krauss et al. (2017) Replication + Extension
+#  IEOR 4733 Algorithmic Trading, Columbia University
+# ============================================================
+
+# ── Core data / ML ───────────────────────────────────────────
+numpy>=1.24
+pandas>=2.0
+scipy>=1.10
+scikit-learn>=1.3
+xgboost>=2.0          # GBT model (gbt_model.py)
+statsmodels>=0.14     # factor regression (factor_regression.py)
+
+# ── Deep learning ────────────────────────────────────────────
+# PyTorch: install the version that matches your CUDA setup.
+# CPU-only:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+# CUDA 12.x (recommended):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+torch>=2.0            # DNN model (dnn_training.py)
+
+# ── Dashboard ────────────────────────────────────────────────
+streamlit>=1.35
+plotly>=5.18
+pyyaml>=6.0           # config.yaml parsing
+
+# ── Data / IO ────────────────────────────────────────────────
+openpyxl>=3.1         # reading FF factor Excel files
+
+# ── WRDS data access (optional) ──────────────────────────────
+# Required only for Step 1 (data_collection.py).
+# Requires a WRDS account and institutional subscription.
+# wrds>=3.1

@@ -1,0 +1,111 @@
+# ============================================================
+#  ML Statistical Arbitrage Pipeline — Config
+#  Krauss et al. (2017) Replication + Extension
+#  IEOR 4733 Algorithmic Trading, Columbia University
+# ============================================================
+
+# ── Paths ────────────────────────────────────────────────────
+paths:
+  data_dir:     data
+  code_dir:     Code
+  figures_dir:  figures
+
+# ── Backtest parameters ──────────────────────────────────────
+backtest:
+  k_values: [10, 50, 100, 150, 200]   # portfolio sizes (long + short legs)
+  trading_days_per_year: 250
+  tc_bps: 5                            # transaction cost per half-turn (Krauss 2017: 5 bps)
+                                       # daily round-trip = 4 half-turns x 5 bps = 20 bps
+
+# ── Reporting sub-periods ─────────────────────────────────────
+# Two sub-periods following the report structure:
+#
+#   PAPER PERIOD  (our replication, Table 1 in report)
+#     December 1992 – December 2015
+#     Note: original Krauss et al. (2017) ends October 2015 (period 23, 2015-10-14);
+#           we include Q4 2015 to complete the calendar year.
+#
+#   EXTENDED PERIOD  (out-of-sample extension, Table 5 in report)
+#     January 2016 – September 2024
+#
+periods:
+  paper_start:    "1992-12-16"   # first DNN prediction date
+  paper_end:      "2015-12-31"   # our replication period end (Table 1)
+  extended_start: "2016-01-01"   # out-of-sample extension start (Table 5)
+  extended_end:   "2024-09-09"   # last ensemble prediction date (GBT limit)
+
+  # Original Krauss 2017 boundary (period 23 end) — for reference only
+  krauss_original_end: "2015-10-14"
+
+# ── Model definitions ─────────────────────────────────────────
+models:
+  dnn:
+    enabled: true
+    script:  Code/dnn_training.py
+    outputs: [data/dnn_predictions.csv, data/dnn_portfolio_returns.csv]
+
+  gbt:
+    enabled: true
+    script:  Code/gbt_model.py
+    outputs: [data/gbt_predictions.csv, data/gbt_performance.csv]
+
+  rf:
+    enabled: true
+    script:  null                   # run Code/random_forest.ipynb manually in Jupyter
+    outputs: [data/rf_predictions.csv]
+
+  ensemble:
+    enabled: true
+    script:  Code/ensemble.py
+    methods: [ENS1, ENS2, ENS3]
+    outputs:
+      - data/ensemble_predictions.csv
+      - data/ensemble_portfolio_returns.csv
+      - data/ensemble_performance_paper.csv
+      - data/ensemble_performance_extended.csv
+
+# ── Pipeline step order ──────────────────────────────────────
+pipeline:
+  skip_if_exists: true    # skip a step when ALL its outputs already exist
+  steps:
+    - name:    data
+      script:  Code/data_collection.py
+      outputs: [data/daily_universe.csv]
+
+    - name:    features
+      script:  Code/feature_engineering.py
+      outputs: [data/features.csv]
+
+    - name:    periods
+      script:  Code/study_period.py
+      outputs: [data/study_periods.csv]
+
+    - name:    dnn
+      script:  Code/dnn_training.py
+      outputs: [data/dnn_predictions.csv, data/dnn_portfolio_returns.csv]
+
+    - name:    gbt
+      script:  Code/gbt_model.py
+      outputs: [data/gbt_predictions.csv, data/gbt_performance.csv]
+
+    - name:    rf
+      script:  null          # Jupyter: Code/random_forest.ipynb
+      outputs: [data/rf_predictions.csv]
+
+    - name:    ensemble
+      script:  Code/ensemble.py
+      outputs:
+        - data/ensemble_predictions.csv
+        - data/ensemble_portfolio_returns.csv
+        - data/ensemble_performance_paper.csv
+        - data/ensemble_performance_extended.csv
+
+    - name:    factors
+      script:  Code/factor_regression.py
+      outputs: [data/factor_regression_results.csv, data/factor_regression_summary.csv]
+
+# ── Dashboard settings ────────────────────────────────────────
+dashboard:
+  default_k:  10
+  show_net:   true    # show TC-adjusted (net) returns by default
+  port:       8501
