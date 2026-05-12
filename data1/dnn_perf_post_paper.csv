@@ -1,0 +1,22 @@
+metric,before_TC,after_TC
+Mean return (long),0.000719,-0.000281
+Mean return (short),0.000376,0.001376
+Mean return,0.000343,-0.001657
+Standard error (NW),0.000453,0.000453
+t-statistic (NW),0.7569,-3.6624
+PT test statistic,3.2252,
+Minimum,-0.1647,-0.1667
+Quartile 1,-0.0086,-0.0106
+Median,0.0006,-0.0014
+Quartile 3,0.0096,0.0076
+Maximum,0.1297,0.1277
+Standard deviation,0.0204,0.0204
+Skewness,-0.3286,-0.3286
+Kurtosis,9.6889,9.6889
+Historical 1-percent VaR,-0.0589,-0.0609
+Historical 1-percent CVaR,-0.0868,-0.0888
+Historical 5-percent VaR,-0.0284,-0.0304
+Historical 5-percent CVaR,-0.0485,-0.0505
+Maximum drawdown,0.5447,0.9861
+Calmar ratio,0.0621,-0.3785
+Share with return > 0,0.518,0.4566

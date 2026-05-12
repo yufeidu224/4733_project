@@ -1,0 +1,6 @@
+metric,our_pre_tc,our_post_tc,paper_pre_tc,paper_post_tc
+Mean return,0.6327,-0.0132,1.7627,0.6714
+Std deviation,0.2794,0.2794,0.3308,0.3308
+Downside deviation,0.2042,0.2008,0.1847,0.1981
+Sharpe ratio,1.7564,-0.0475,5.1166,1.9008
+Sortino ratio,3.0986,-0.0657,9.5462,3.3883
